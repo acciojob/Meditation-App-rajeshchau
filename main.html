@@ -1,16 +1,45 @@
 <!DOCTYPE html>
-
-<html>
-
+<html lang="en">
 <head>
-	<link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8" />
+  <title>Meditation App</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
-
 <body>
-	<!-- the entire body must be written by student -->
-    <script type="text/javascript" src="./script.js">
-</script>
+  <div id="app">
+    <div class="vid-container">
+      <video id="video" autoplay loop muted>
+        <source src="Sounds/beach.mp4" type="video/mp4" />
+      </video>
+    </div>
 
+    <div class="controls">
+      <div id="time-select">
+        <button id="smaller-mins">2 Minutes</button>
+        <button id="medium-mins">5 Minutes</button>
+        <button id="long-mins">10 Minutes</button>
+      </div>
+
+      <div class="player-container">
+        <audio id="audio">
+          <source src="Sounds/beach.mp3" type="audio/mp3" />
+        </audio>
+        <button class="play">▶</button>
+      </div>
+
+      <div class="time-display">10:0</div>
+
+      <div class="sound-picker">
+        <button data-sound="Sounds/beach.mp3" data-video="Sounds/beach.mp4">
+          <img src="https://img.icons8.com/ios-filled/50/ffffff/sun.png" />
+        </button>
+        <button data-sound="Sounds/rain.mp3" data-video="Sounds/rain.mp4">
+          <img src="https://img.icons8.com/ios-filled/50/ffffff/rain.png" />
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
 </body>
-
 </html>
