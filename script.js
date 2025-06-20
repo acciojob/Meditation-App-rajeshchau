@@ -31,7 +31,7 @@ playBtn.addEventListener("click", () => {
 });
 
 const playMedia = () => {
-  audio.play();
+  audio.play().catch(() => {});
   video.play();
   startTimer();
   playBtn.textContent = "❚❚";
