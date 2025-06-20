@@ -1,82 +1,63 @@
-const app = document.getElementById("app");
-const audio = document.getElementById("audio");
-const video = document.getElementById("video");
-const playBtn = document.querySelector(".play");
-const timeDisplay = document.querySelector(".time-display");
-const timeButtons = document.querySelectorAll("#time-select button");
-const soundButtons = document.querySelectorAll(".sound-picker button");
+let audio = document.querySelector(".audio");
+let video = document.querySelector("video");
+let timeDisplay = document.querySelector(".time-display");
+let playBtn = document.querySelector(".play");
+let duration = 600;
+let currentInterval;
 
-let duration = 600; // default 10 minutes
-let currentTime = duration;
-let timer;
-let isPlaying = false;
+function setTime(sec) {
+  duration = sec;
+  updateTimeDisplay(sec);
+}
 
-// Set time from buttons
-timeButtons.forEach(button => {
-  button.addEventListener("click", () => {
-    if (button.id === "smaller-mins") duration = 120;
-    if (button.id === "medium-mins") duration = 300;
-    if (button.id === "long-mins") duration = 600;
-    resetTimer();
-  });
-});
+function updateTimeDisplay(seconds) {
+  const mins = Math.floor(seconds / 60);
+  const secs = Math.floor(seconds % 60);
+  timeDisplay.textContent = `${mins}:${secs}`;
+}
 
-// Play / Pause logic
-playBtn.addEventListener("click", () => {
-  if (isPlaying) {
-    pauseMedia();
-  } else {
-    playMedia();
-  }
-});
-
-const playMedia = () => {
-  audio.play().catch(() => {});
-  video.play();
-  startTimer();
-  playBtn.textContent = "❚❚";
-  isPlaying = true;
-};
-
-const pauseMedia = () => {
+function setSound(type) {
+  clearInterval(currentInterval);
   audio.pause();
   video.pause();
-  clearInterval(timer);
-  playBtn.textContent = "▶";
-  isPlaying = false;
-};
+  if (type === "rain") {
+    audio.src = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3";
+    video.src = "https://cdn.pixabay.com/video/2017/08/10/11059-229533237_large.mp4";
+  } else {
+    audio.src = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3";
+    video.src = "https://cdn.pixabay.com/video/2022/10/14/134248-761517496_large.mp4";
+  }
+  audio.load();
+  video.load();
+  audio.play();
+  video.play();
+}
 
-const startTimer = () => {
-  timer = setInterval(() => {
-    currentTime--;
-    const mins = Math.floor(currentTime / 60);
-    const secs = currentTime % 60;
-    timeDisplay.textContent = `${mins}:${secs < 10 ? "0" + secs : secs}`;
-    if (currentTime <= 0) {
-      pauseMedia();
-      resetTimer();
+function togglePlay() {
+  if (audio.paused) {
+    audio.play();
+    video.play();
+    startTimer(duration);
+    playBtn.textContent = "⏸";
+  } else {
+    audio.pause();
+    video.pause();
+    clearInterval(currentInterval);
+    playBtn.textContent = "▶";
+  }
+}
+
+function startTimer(seconds) {
+  let time = seconds;
+  clearInterval(currentInterval);
+  currentInterval = setInterval(() => {
+    time--;
+    if (time <= 0) {
+      clearInterval(currentInterval);
+      audio.pause();
+      video.pause();
+      playBtn.textContent = "▶";
     }
+    updateTimeDisplay(time);
   }, 1000);
-};
-
-const resetTimer = () => {
-  clearInterval(timer);
-  currentTime = duration;
-  timeDisplay.textContent = `${Math.floor(duration / 60)}:0`;
-  isPlaying = false;
-  playBtn.textContent = "▶";
-  audio.pause();
-  audio.currentTime = 0;
-};
-
-// Sound & Video Switcher
-soundButtons.forEach(button => {
-  button.addEventListener("click", () => {
-    const sound = button.getAttribute("data-sound");
-    const vid = button.getAttribute("data-video");
-    audio.src = sound;
-    video.src = vid;
-    pauseMedia();
-    resetTimer();
-  });
-});
+}
